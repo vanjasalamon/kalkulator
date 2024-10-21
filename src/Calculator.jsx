@@ -25,7 +25,12 @@ export default function Calculator(){
     };
 
     return(
-        <div></div>
+        <>
+        <div>
+            <h1>Kalkulator otplate duga</h1>
+        </div>
+        <label>Iznos duga: <input type="number" value={dug()} onInput={(e) => setDug(+e.currentTarget.value)}/></label>
+        </>
     );
 
     
