@@ -1,13 +1,34 @@
 import { createSignal } from "solid-js";
 import "./Calculator.css";
+import money from "./assets/money.png";
 
 export default function Calculator() {
     const [dug, setDug] = createSignal(0);
     const [kamate, setKamate] = createSignal(0);
     const [mjesecniDoplatak, setMjesecniDoplatak] = createSignal(0);
     const [mjeseci, setMjeseci] = createSignal(0);
+    const [error, setError] = createSignal('');
 
     const izracunajMjesece = () => {
+        setError('');
+
+        if (dug() <= 0) {
+            setError('Iznos duga mora biti veći od 0.');
+            return;
+        }
+        if (kamate() < 0) {
+            setError('Kamatna stopa ne može biti negativna.');
+            return;
+        }
+        if (kamate() > 20) {
+            setError('Kamatna stopa je prevelika.');
+            return;
+        }
+        if (mjesecniDoplatak() <= 0) {
+            setError('Mjesečni doplatak mora biti veći od 0.');
+            return;
+        }
+
         let preostaliDug = dug();
         const K = (kamate() / 100) / 12;
         const M = mjesecniDoplatak();
@@ -15,6 +36,7 @@ export default function Calculator() {
 
         if (M <= preostaliDug * K) {
             setMjeseci(null); 
+            setError('Mjesečni doplatak nije dovoljan za pokriće kamata.');
             return;
         }
 
@@ -29,9 +51,10 @@ export default function Calculator() {
     return (
         <>
             <div>
+                <img src={money} alt="money" width="150" height="150" />
                 <h1>Kalkulator otplate duga</h1>
                 <label>
-                    Iznos duga: 
+                    Iznos duga u eurima: 
                     <input type="number" value={dug()} onInput={(e) => setDug(+e.currentTarget.value)} />
                 </label>
                 <br />
@@ -47,6 +70,7 @@ export default function Calculator() {
                 <br />
                 <button onClick={izracunajMjesece}>Izračunaj mjesece</button>
                 <br />
+                {error() && <p style={{ color: 'red' }}>{error()}</p>}
                 {mjeseci() === null ? (
                     <p>Mjesečni doplatak nije dovoljan za pokriće kamata.</p>
                 ) : (
