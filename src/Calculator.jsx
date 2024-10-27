@@ -1,38 +1,58 @@
-import { createSignal } from "solid-js"
+import { createSignal } from "solid-js";
+import "./Calculator.css";
 
+export default function Calculator() {
+    const [dug, setDug] = createSignal(0);
+    const [kamate, setKamate] = createSignal(0);
+    const [mjesecniDoplatak, setMjesecniDoplatak] = createSignal(0);
+    const [mjeseci, setMjeseci] = createSignal(0);
 
-export default function Calculator(){
-    const Calculator = () => {
-        const [dug, setDug] = createSignal(0);
-        const [kamate, setKamate] = createSignal(0);
-        const [mjesecniDoplatak, setMjesecniDoplatak] = createSignal(0);
-        const [mjeseci, setMjeseci] = createSignal(0);
+    const izracunajMjesece = () => {
+        let preostaliDug = dug();
+        const K = (kamate() / 100) / 12;
+        const M = mjesecniDoplatak();
+        let n = 0;
 
-        const izracunajMjesece = () => {
-            const D = dug();
-            const K = kamate() / 100 / 12;
-            const M = mjesecniDoplatak();
+        if (M <= preostaliDug * K) {
+            setMjeseci(null); 
+            return;
+        }
 
-            if (M <= D * K){
-                setMjeseci(-1);
-                return;
-            }
+        while (preostaliDug > 0) {
+            preostaliDug = preostaliDug * (1 + K) - M;
+            n += 1;
+        }
 
-            const n = Math.ceil(math.log(1 - (K * D) / M) / Math.log(1 + K));
-            setMjeseci(n);
-
-        };
+        setMjeseci(n);
     };
 
-    return(
+    return (
         <>
-        <div>
-            <h1>Kalkulator otplate duga</h1>
-        </div>
-        <label>Iznos duga: <input type="number" value={dug()} onInput={(e) => setDug(+e.currentTarget.value)}/></label>
+            <div>
+                <h1>Kalkulator otplate duga</h1>
+                <label>
+                    Iznos duga: 
+                    <input type="number" value={dug()} onInput={(e) => setDug(+e.currentTarget.value)} />
+                </label>
+                <br />
+                <label>
+                    Kamatna stopa (% godišnje): 
+                    <input type="number" value={kamate()} onInput={(e) => setKamate(+e.currentTarget.value)} />
+                </label>
+                <br />
+                <label>
+                    Mjesečni doplatak: 
+                    <input type="number" value={mjesecniDoplatak()} onInput={(e) => setMjesecniDoplatak(+e.currentTarget.value)} />
+                </label>
+                <br />
+                <button onClick={izracunajMjesece}>Izračunaj mjesece</button>
+                <br />
+                {mjeseci() === null ? (
+                    <p>Mjesečni doplatak nije dovoljan za pokriće kamata.</p>
+                ) : (
+                    <p>Broj mjeseci potrebnih za isplatu duga: {mjeseci()}</p>
+                )}
+            </div>
         </>
     );
-
-    
-
 }
