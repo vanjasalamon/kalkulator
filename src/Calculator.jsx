@@ -16,6 +16,10 @@ export default function Calculator() {
             setError('Iznos duga mora biti veći od 0.');
             return;
         }
+        if (dug() >= 9999999999) {
+            setError('Iznos duga je prevelik.');
+            return;
+        }
         if (kamate() < 0) {
             setError('Kamatna stopa ne može biti negativna.');
             return;
@@ -26,6 +30,10 @@ export default function Calculator() {
         }
         if (mjesecniDoplatak() <= 0) {
             setError('Mjesečni doplatak mora biti veći od 0.');
+            return;
+        }
+        if (mjesecniDoplatak() >= 9999999999) {
+            setError('Iznos mjesečnog doplatka je prevelik.');
             return;
         }
 
